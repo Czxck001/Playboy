@@ -82,7 +82,7 @@ def w(s):
             l.append(c)
         elif c == '-' or c == '_' or c == ' ':
             l.append('_')
-    return ''.join(l)  
+    return ''.join(l)
 
 def legal_name(name):
     return name.replace(' ', '_').replace('\\', '').replace('/', '').replace(':', '').replace('*','').replace('?', '').replace('"', '').replace('<', '').replace('>','').replace('|', '')
