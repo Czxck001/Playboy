@@ -13,65 +13,46 @@ def print_safe(s):
 
 # print_safe('\xf6');exit()
 
-
 import re, json
 from os import mkdir
 from os.path import isdir, join, splitext, isfile
 
 import requests
 
-
 s = requests.Session()
 host_url = 'http://www.hentai-foundry.com'
 r = s.get(host_url + '/?enterAgree=1&size=1550')
-print('Connected')
+print('Connected.')
 
-# r = s.post(host_url + '/site/filters', 
-#            data='rating_nudity=3&rating_violence=3&rating_profanity=3&rating_racism=3&rating_sex=3&rating_spoilers=3&rating_yaoi=0&rating_yaoi=1&rating_yuri=0&rating_yuri=1&rating_teen=0&rating_guro=0&rating_furry=0&rating_beast=0&rating_male=0&rating_male=1&rating_female=0&rating_female=1&rating_futa=0&rating_other=0&filter_media=A&filter_order=date_new&filter_type=0')
+import urllib.parse as up
+new_token = up.unquote(s.cookies.get('YII_CSRF_TOKEN')).split(':')[2][1:-2]
 
-# with open('a.html', 'wb') as f:
-#     f.write(r.text.encode())
-# 
-# cookie_s = r.headers['Set-Cookie']
-# 
-# session_head = 'PHPSESSID='
-# token_head = 'YII_CSRF_TOKEN='
-# 
-# session_loc = cookie_s.find(session_head) + len(session_head)
-# session = cookie_s[session_loc:session_loc+32]
-# 
-# token_loc = cookie_s.find(token_head) + len(token_head)
-# token = cookie_s[token_loc:token_loc+98]
-# token2 = token[:40]
-# 
-# print(token2)
+data_dic = {'YII_CSRF_TOKEN': new_token,
+        'rating_beast': ['0'], 
+        'rating_futa': ['0'], 
+        'rating_violence': ['3'], 
+        'rating_male': ['1'], 
+        'rating_teen': ['1'], 
+        'rating_furry': ['1'], 
+        'rating_female': ['1'], 
+        'rating_yuri': ['1'],
+        'rating_profanity': ['3'], 
+        'filter_type': ['0'], 
+        'filter_order': ['date_new'], 
+        'rating_yaoi': ['1'], 
+        'rating_spoilers': ['3'], 
+        'rating_other': ['1'], 
+        'rating_racism': ['3'], 
+        'rating_nudity': ['3'], 
+        'rating_sex': ['3'], 
+        'filter_media': ['A'], 
+        'rating_guro': ['1'],
+        }
 
-# print(token)
+r = s.post(host_url + '/site/filters',
+           data=data_dic)
 
-# import re
-# res = re.findall(r'<input type="hidden" value="(.*)" name="YII_CSRF_TOKEN" />', r.text)
-# token3 = res[0]
-
-
-# r = s.post(host_url + '/site/filters',
-#             headers = {'Cookie': session_head + session + ';' + token_head + token3 + ';'},
-# #             headers = {'Cookie': session_head + session + ';'},
-#            data = token_head + token2 + '&rating_nudity=3&rating_violence=3&rating_profanity=3&rating_racism=3&rating_sex=3&rating_spoilers=3&rating_yaoi=0&rating_yaoi=1&rating_yuri=0&rating_yuri=1&rating_teen=1&rating_guro=1&rating_furry=1&rating_beast=1&rating_male=0&rating_male=1&rating_female=0&rating_female=1&rating_futa=0&rating_other=0&filter_media=A&filter_order=date_new&filter_type=0')
-
-# r = s.get('http://www.hentai-foundry.com/pictures/user/scerg/434973/Hermione')
-# with open('c.html', 'wb') as f:
-#     f.write(r.text.encode())
-
-# r = s.get('http://www.hentai-foundry.com/pictures/user/gulavisual/432886/Aqua-Party')
-# with open('q.html', 'wb') as f:
-#     f.write(r.text.encode())
-#     
-# exit()
-
-
-# import sys, io
-# sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
-
+print('Filter Set.')
 
 ddir = './download'
 
@@ -162,13 +143,8 @@ def by_user(username):
     L = len(res)
     print('A total of %d pictures found.' % L)
     return {username: [{'url': url, 'name': name, 'finished': 'false'} for url, name in res]}
-    
-# r = s.get('http://www.hentai-foundry.com/pictures/user/scerg')
-# with open('z.html', 'wb') as f:
-#     f.write(r.text.encode())
 
 mission_path = './mission.json'
-
 
 class Mission(object):
     def __init__(self, path=mission_path):
@@ -224,7 +200,7 @@ featured_users = ['Xanemonium', 'FelinaColibra', 'khantian', 'GENSHI', 'Doomsata
 # print(list(S))
 
 # m = Mission()
-# for user in featured_users:
+# for user in fav_users:
 #     m.update(by_user(user))
 
 
